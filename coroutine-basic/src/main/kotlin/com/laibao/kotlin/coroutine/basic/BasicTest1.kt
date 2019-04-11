@@ -4,6 +4,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
 
 fun main() {
@@ -18,7 +19,22 @@ fun main() {
         println("World!")
     }
 
-    // main thread continues while coroutine is delayed
+    thread {
+        /**
+         * Error: Kotlin: Suspend functions are only allowed to
+         *
+         * be called from a coroutine or another suspend function
+         */
+
+        //delay(1000L)
+
+        TimeUnit.SECONDS.sleep(3)
+
+        println("World! World! World! World! World!")      // main thread continues while coroutine is delayed
+    }
+    
     println("Hello,")
-    TimeUnit.SECONDS.sleep(2)
+    TimeUnit.SECONDS.sleep(5)
+
+
 }
