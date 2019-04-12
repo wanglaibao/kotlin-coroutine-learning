@@ -3,6 +3,7 @@ package com.laibao.kotlin.coroutine.basic
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
@@ -17,6 +18,16 @@ fun main() {
         delay(1000L)
         // println after delay
         println("World!")
+    }
+
+    runBlocking {
+
+        (1 .. 5000000).forEach{
+            launch {
+                delay(5000)
+                println("协程的能力测试")
+            }
+        }
     }
 
     thread {
