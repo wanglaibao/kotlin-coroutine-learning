@@ -15,10 +15,11 @@ fun main() = runBlocking{
             }
         } finally {
             println("I'm running finally")
+            delay(1000)
         }
     }
 
-    delay(30000L) // delay a bit
+    delay(1300L) // delay a bit
     println("main: I'm tired of waiting!")
 
     job.cancelAndJoin() // cancels the job and waits for its completion
