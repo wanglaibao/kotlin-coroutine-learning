@@ -4,7 +4,11 @@ fun main() {
 
     val addResult = add(100){a -> a * a}
 
+    val addResult1 = add(100){it * it * it}
+
     println("the result of addResult is $addResult")
+
+    println("the result of addResult1 is $addResult1")
 
     val block0:()->Unit = {
         println("我是一个函数类型")
