@@ -2,6 +2,14 @@ package com.laibao.kotlin.coroutine.basic
 
 fun main() {
 
+    val block0:()->Unit = {
+        println("我是一个函数类型")
+    }
+
+    block0()
+
+    block0.invoke()
+
     (1 .. 100).forEach{
         //下面这个是匿名函数也就是lambda表达式
         {
