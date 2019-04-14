@@ -2,6 +2,10 @@ package com.laibao.kotlin.coroutine.basic
 
 fun main() {
 
+    val addResult = add(100){a -> a * a}
+
+    println("the result of addResult is $addResult")
+
     val block0:()->Unit = {
         println("我是一个函数类型")
     }
@@ -56,6 +60,9 @@ fun main() {
     println("----------------------------------------------------")
 }
 
+fun add(a:Int,block: (Int) -> Int):Int{
+    return block(a)
+}
 
 fun cacl(a:Int,b:Int,block:(Int,Int) -> Int):Int {
    return block.invoke(a,b)
