@@ -1,6 +1,14 @@
 package com.laibao.kotlin.coroutine.basic
 
 fun main() {
+
+    (1 .. 100).forEach{
+        //下面这个是匿名函数也就是lambda表达式
+        {
+            println("我是中国人，毛主席万岁")
+        }()
+    }
+
     val result = {a:Int,b:Int -> a + b}
     println(result(100,200))
     println(result.invoke(200,300))
@@ -28,4 +36,23 @@ fun main() {
 
     val block1:(() -> Unit)? = null
     block1?.invoke()
+
+
+
+
+    println("----------------------------------------------------")
+    println(cacl(100,100,{m,n -> m + n}))
+    println(cacl(100,100,{m,n -> m - n}))
+    println(cacl(100,100,{m,n -> m * n}))
+    println(cacl(100,100,{m,n -> m / n}))
+    println("----------------------------------------------------")
+}
+
+
+fun cacl(a:Int,b:Int,block:(Int,Int) -> Int):Int {
+   return block.invoke(a,b)
+}
+
+fun caclute(a:Int,b:Int,block:(Int,Int) -> Int):Int {
+    return block(a,b)
 }
