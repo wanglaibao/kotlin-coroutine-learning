@@ -19,6 +19,9 @@ fun main() {
         }
     }
     println("Completed in $time ms")
+
+    val str = "asdfasfd"
+    str.apply {  }
 }
 //sampleEnd
 
