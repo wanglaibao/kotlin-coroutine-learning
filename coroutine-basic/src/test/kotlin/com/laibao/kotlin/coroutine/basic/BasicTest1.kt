@@ -203,4 +203,13 @@ class BasicTest1 {
 
 
 
+    @Test
+    fun testLaunch() = runBlocking {
+        println("Kotlin Start")
+        launch{
+            delay(2000)
+            println("Kotlin Inside")
+        }
+        println("Kotlin End")
+    }
 }
