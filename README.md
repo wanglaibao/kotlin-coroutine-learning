@@ -6,8 +6,8 @@
 [Kotlin/kotlinx.coroutines] (https://github.com/Kotlin/kotlinx.coroutines/blob/master/coroutines-guide.md)
 [Kotlin/kotlinx.coroutines] (https://github.com/Kotlin/kotlinx.coroutines/blob/master/reactive/coroutines-guide-reactive.md)
 [Kotlin/kotlinx.coroutines 协程代码示例] (https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-core/jvm/test/guide/example-basic-01.kt)
-
-
+[Concurrency: Java Futures and Kotlin Coroutines] (https://blog.frankel.ch/concurrency-java-futures-kotlin-coroutines/)
+[ktor.io] (https://github.com/ktorio)
 
 
 [coroutineScope] (https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/coroutine-scope.html)
@@ -38,16 +38,17 @@
 
 [Kotlin教程——史上最全面、最详细的学习教程，持续更新中....] (https://www.cnblogs.com/Jetictors/)
 [Kotlin从入门到放弃（四）——协程下] (https://yq.aliyun.com/articles/467793?spm=5176.10695662.1996646101.searchclickresult.2a572879bzQnP9)
-
+[Learn Spring 5 and Spring Boot 2] (https://www.baeldung.com/learn-spring-course)
 [深入学习MySQL事务：ACID特性的实现原理] (https://www.cnblogs.com/zourui4271/p/10332608.html)
 [赵海平谈分布式的异步处理] (http://www.cnblogs.com/zourui4271/p/5237250.html)
 
+[Threads vs Coroutines in Kotlin] (https://www.baeldung.com/kotlin-threads-coroutines)
 
 
 
 
 
 
-
-
-
+[Continuation-passing style] (https://en.wikipedia.org/wiki/Continuation-passing_style)
+[Coroutine in Java - Quasar Fiber实现] (https://segmentfault.com/a/1190000006079389)
+[Testing Fiber Implementations in JVM] (https://vlkan.com/blog/post/2014/09/01/java-fiber-test/)

@@ -9,6 +9,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <modules>
         <module>coroutine-basic</module>
+        <module>coroutine-practice-and-progress</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -33,8 +34,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-        <kotlin.version>1.3.21</kotlin.version>
-        <kotlinx.coroutines.version>1.1.1</kotlinx.coroutines.version>
+        <!--<kotlin.version>1.3.21</kotlin.version>-->
+        <kotlin.version>1.3.30</kotlin.version>
+        <!--<kotlinx.coroutines.version>1.1.1</kotlinx.coroutines.version>-->
+        <kotlinx.coroutines.version>1.2.0</kotlinx.coroutines.version>
         <junit.version>4.12</junit.version>
     </properties>
 
