@@ -4,6 +4,7 @@
 
 
 
+[Learn Spring 5 and Spring Boot 2] (https://www.baeldung.com/learn-spring-course)
 
 
 
@@ -12,6 +13,15 @@
 
 
 
+
+
+
+
+
+[kotlinx.coroutines Job] (https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-job/index.html)
+[CoroutineDispatcher] ()https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-dispatcher/index.html
+[CoroutineScope] (https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/index.html)
+[GlobalScope] (https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-global-scope/index.html)
 
 
 
