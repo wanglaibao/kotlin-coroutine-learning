@@ -1,9 +1,6 @@
 package com.laibao.kotlin.coroutine.basic
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.junit.Test
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
@@ -107,5 +104,69 @@ class CoroutineBasicsTest {
         }
 
         println("Hello,")
+    }
+
+
+    @Test
+    fun testCoroutinesAreLightWeight() = runBlocking{
+
+        repeat(3000_000) { // launch a lot of coroutines
+            launch {
+                delay(3000L)
+                println("-------------")
+            }
+        }
+    }
+
+    @Test
+    fun testExtractFunctionRefactoring() = runBlocking{
+
+        launch {
+            doWorld()
+        }
+        println("Hello,")
+    }
+
+
+    /**
+     * Suspending functions can be used inside coroutines just like regular functions,
+     * but their additional feature is that they can, in turn, use other suspending functions,
+     * like delay in this example, to suspend execution of a coroutine.
+     */
+    // this is your first suspending function
+    private suspend fun doWorld() {
+        delay(10000L)
+        println("World!")
+    }
+
+
+    /**
+     * In addition to the coroutine scope provided by different builders,
+     * it is possible to declare our own scope using coroutineScope builder.
+     * It creates new coroutine scope and does not complete until all launched children complete.
+     * The main difference between runBlocking and coroutineScope is that
+     * the latter does not block the current thread while waiting for all children to complete.
+     */
+    @Test
+    fun testScopeBuilder() = runBlocking{
+
+        launch {
+            delay(2000L)
+            println("Task from runBlocking_2222222222222")
+        }
+
+
+        coroutineScope { // Creates a new coroutine scope
+            launch {
+                delay(5000L)
+                println("Task from nested launch_333333333333")
+            }
+
+            delay(1000L)
+            println("Task from coroutine_111111111 scope") // This line will be printed before nested launch
+        }
+
+
+        println("Coroutine_44444444444444 scope is over") // This line is not printed until nested launch completes
     }
 }
