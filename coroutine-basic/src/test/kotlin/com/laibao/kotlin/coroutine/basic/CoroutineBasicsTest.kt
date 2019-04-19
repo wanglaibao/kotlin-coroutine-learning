@@ -6,6 +6,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
 class CoroutineBasicsTest {
 
@@ -26,6 +27,19 @@ class CoroutineBasicsTest {
         TimeUnit.SECONDS.sleep(2)
     }
 
+    @Test
+    fun testThreadWay() {
+        // You can achieve the same result replacing GlobalScope.launch { ... }
+        // with thread { ... } and delay(...) with Thread.sleep(...). Try it.
+        thread {
+            TimeUnit.SECONDS.sleep(2)
+            println("World!")
+        }
+        println("Hello,")
+        TimeUnit.SECONDS.sleep(4)
+    }
+
+
     /**
      * Global coroutines are like daemon threads
      */
@@ -43,4 +57,6 @@ class CoroutineBasicsTest {
 
         //sampleEnd
     }
+
+
 }
