@@ -10,6 +10,10 @@ import kotlin.concurrent.thread
 
 class CoroutineBasicsTest {
 
+    /**
+     *  delay() is a special suspending function that does not block a thread,
+     *  but suspends coroutine and it can be only used from a coroutine or in some other suspend function
+     */
     @Test
     fun testGlobalScope1() {
 
@@ -26,6 +30,22 @@ class CoroutineBasicsTest {
         println("Hello,")
         TimeUnit.SECONDS.sleep(2)
     }
+
+
+    @Test
+    fun testGlobalScope2() {
+        val job = GlobalScope.launch {
+            delay(3000L)
+            println("World!")
+        }
+
+        println("Hello,")
+        //TimeUnit.SECONDS.sleep(2)
+        runBlocking {
+            delay(5000)
+        }
+    }
+
 
     @Test
     fun testThreadWay() {
@@ -44,7 +64,7 @@ class CoroutineBasicsTest {
      * Global coroutines are like daemon threads
      */
     @Test
-    fun testGlobalScope2() = runBlocking {
+    fun testGlobalScope5() = runBlocking<Unit> {
         //sampleStart
 
         GlobalScope.launch {
@@ -59,4 +79,33 @@ class CoroutineBasicsTest {
     }
 
 
+    /**
+     * There is still something to be desired for practical usage of coroutines.
+     * When we use GlobalScope.launch we create a top-level coroutine.
+     * Even though it is light-weight, it still consumes some memory resources while it runs
+     *
+     *
+     * There is a better solution.
+     * We can use structured concurrency in our code.
+     * Instead of launching coroutines in the GlobalScope,
+     * just like we usually do with threads (threads are always global),
+     * we can launch coroutines in the specific scope of the operation we are performing.
+     *
+     * Every coroutine builder, including runBlocking,
+     * adds an instance of CoroutineScope to the scope of its code block.
+     * We can launch coroutines in this scope without having to join them explicitly,
+     * because an outer coroutine (runBlocking ) does not complete until
+     * all the coroutines launched in its scope complete
+     */
+
+    @Test
+    fun testStructuredConcurrency() = runBlocking{
+
+        launch { // launch new coroutine in the scope of runBlocking
+            delay(10000L)
+            println("World!")
+        }
+
+        println("Hello,")
+    }
 }
