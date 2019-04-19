@@ -73,8 +73,14 @@ so it doesn’t require context switching on processor, so they are faster.     
 
     and we do future.get() in Java to the get the result.
 
-
     Suspend functions are only allowed to be called from a coroutine or another suspend function.
+
+
+    we can see that in Kotlin, launch{}, async{}, and await() are regular functions
+
+    marked with the suspend keyword.
+
+    This gives a more flexible tool into the hands of the developers in terms of naming and return types.
 ```
 
 

@@ -1,9 +1,6 @@
 package com.laibao.kotlin.coroutine.basic
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
@@ -28,7 +25,10 @@ fun main() {
                 println("协程的能力测试")
             }
         }
+
+        async {  }
     }
+
 
     thread {
         /**

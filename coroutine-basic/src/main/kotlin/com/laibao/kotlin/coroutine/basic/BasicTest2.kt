@@ -1,9 +1,6 @@
 package com.laibao.kotlin.coroutine.basic
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 
 fun main() {
 
@@ -22,6 +19,8 @@ fun main() {
         println("Hello,金戈")
         println("Hello,金戈")
 
+
     }
 
 }
+
