@@ -16,7 +16,7 @@
 
         Andrei Chernyshev, Outfittery - Kotlin + Spring Boot = decision making platform
 ```
-
+[Kotlin From Scratch] (https://code.tutsplus.com/series/kotlin-from-scratch--cms-1209)
 [Tips For Writing a Library in Kotlin] (https://www.kotlindevelopment.com/tips-for-writing-a-library-in-kotlin/)
 [Introduction to Kotlin Coroutines] (https://www.baeldung.com/kotlin-coroutines)
 [Threads vs Coroutines in Kotlin] (https://www.baeldung.com/kotlin-threads-coroutines)
@@ -40,3 +40,20 @@
 
 [无锁和无等待的定义和例子] (http://ifeve.com/lock-free-and-wait-free/)
 [CAS and Lock-Free in Java] (https://shuaijunlan.github.io/2018/12/27/java-cas-and-lock-free/)
+
+[Quick Tip: Write Cleaner Code With Kotlin SAM Conversions] (https://code.tutsplus.com/tutorials/quick-tip-write-cleaner-code-with-kotlin-sam-conversions--cms-29304)
+
+[Exploring the Kotlin standard library] (http://beust.com/weblog/2015/10/30/exploring-the-kotlin-standard-library/)
+
+
+
+
+
+
+
+
+
+
+
+
+
