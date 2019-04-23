@@ -1,4 +1,4 @@
-#                                   Kotlin协程原理选集
+#                                   Kotlin协程入门之前生今世【诞生由来】
 *   [Coroutines in Kotlin 多看几遍] (http://blog.alexnesterov.com/post/coroutines/)
 
 *   [Kotlin coroutines and Spring 5] (http://blog.alexnesterov.com/post/kotlin-coroutines-and-spring-5/)
