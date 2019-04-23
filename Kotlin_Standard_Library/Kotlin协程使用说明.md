@@ -23,6 +23,17 @@
     and it is easier to control by the developer.
 ```
 
+
+### So why we need Kotlin Coroutines
+```
+    Kotlin Coroutines enhance asynchronous programming by being lightweight and essentially faster than a thread as they are stackless.
+
+    What this means from a multiprocessing perspective, is that Kotlin Coroutines don’t map on the native CPU thread,
+
+    hence there’s no context-switching on the processor.
+```
+
+
 ### What Problems Do Coroutines Help Us To Solve?
 ```
     PROBLEM【传统Java应用中的问题】	                                    SOLUTION【Kotlin中协程的对应解决方案】
