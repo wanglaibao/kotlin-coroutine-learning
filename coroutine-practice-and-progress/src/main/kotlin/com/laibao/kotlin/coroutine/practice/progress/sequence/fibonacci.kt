@@ -1,7 +1,13 @@
 package com.laibao.kotlin.coroutine.practice.progress.sequence
 
 fun main() {
-    val fibonacciNumber1 = fibonacci.take(10).iterator().forEach { it -> println(it) }
+    fibonacci.take(10).iterator().forEach { it -> println(it) }
+
+    val fibonacciNumber = fibonacci.take(20).joinToString()
+
+    println(fibonacciNumber)
+
+    fibonacci.take(30).iterator().forEach(::println)
 }
 
 val fibonacci = sequence {
