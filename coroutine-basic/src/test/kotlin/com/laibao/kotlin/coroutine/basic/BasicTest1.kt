@@ -212,4 +212,69 @@ class BasicTest1 {
         }
         println("Kotlin End")
     }
+
+    @Test
+    fun testUIInMainThread() = runBlocking<Unit> {
+
+        launch {
+            try{
+                delay(3000)
+                //val user = repo.fetchUserFromNetwork(userId).await()
+                // handle user result
+                println("the current thread is ${Thread.currentThread().name}")
+            } catch(e : Exception) {
+                // TODO
+            }
+        }
+
+
+
+        launch(Dispatchers.IO){
+            val job = coroutineContext[Job]
+
+
+        }
+    }
+
+
+    @Test
+    fun testUIInIOThread() = runBlocking<Unit> {
+
+        launch (Dispatchers.IO){
+            try{
+                delay(3000)
+                //val user = repo.fetchUserFromNetwork(userId).await()
+                // handle user result
+                println("the current thread is ${Thread.currentThread().name}")
+            } catch(e : Exception) {
+                // TODO
+            }
+        }
+    }
+
+
+    @Test
+    fun testUpdateOurUIInsideIOWorkerThread() = runBlocking<Unit> {
+        launch(Dispatchers.IO) {
+            try {
+                //val user = repo.fetchUserFromNetwork(userId).await()
+
+                //delay(3000)
+                //println("the current thread is ${Thread.currentThread().name}")
+                //println("launch(Dispatchers.IO)")
+
+
+                withContext(Dispatchers.Main) {
+                    //updateUi(user)  // In main thread
+                    println("withContext(Dispatchers.Main)")
+                    delay(1000)
+                    println("the_current_thread_is ${Thread.currentThread().name}")
+                }
+
+            } catch (e: Exception) {
+                // TODO
+            }
+        }
+
+    }
 }

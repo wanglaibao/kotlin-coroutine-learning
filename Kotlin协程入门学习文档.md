@@ -46,8 +46,8 @@
 [Exploring the Kotlin standard library] (http://beust.com/weblog/2015/10/30/exploring-the-kotlin-standard-library/)
 
 
-
-
+[Concurrency: Java Futures and Kotlin Coroutines] (https://blog.frankel.ch/concurrency-java-futures-kotlin-coroutines/)
+[A Java Geek 非常好的Java8 Kotlin方面的资源] (https://github.com/ajavageek)
 
 
 
