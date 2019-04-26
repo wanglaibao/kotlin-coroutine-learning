@@ -5,7 +5,7 @@ val words = listOf("level", "pope", "needle", "Anna", "Pete", "noon", "stats")
 /**
  * CPU-bound algorithm.
  */
-fun main(args: Array<String>) {
+fun main() {
     filterPalindromes(words).forEach {
         println(it)
     }
