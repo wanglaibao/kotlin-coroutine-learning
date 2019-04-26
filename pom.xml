@@ -10,6 +10,7 @@
     <modules>
         <module>coroutine-basic</module>
         <module>coroutine-practice-and-progress</module>
+        <module>kotlin-coroutine-in-practice</module>
     </modules>
     <packaging>pom</packaging>
 
