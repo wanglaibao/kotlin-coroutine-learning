@@ -137,6 +137,34 @@
 
         B:Switch状态机
 
+            suspending函数编译之后,会将原来的函数体变为一个由switch语句构成的状态机：
+
+            switch (sm.label) {
+              case 0:
+                sm.item = item
+                sm.label = 1
+                return requestToken(sm)
+              case 1:
+                val item = sm.item
+                val token = sm.result as Token
+                sm.label = 2
+                return createPost(token, item, sm)
+              case 2:
+                val post = sm.result as Post
+                sm.label = 3
+                return processPost(post, sm)
+              case 3:
+                return sm.result as PostResult
+
+
+            这么做的原因是什么呢?
+            Kotlin Coroutine的运行依赖于各种Callback机制.
+            也就是说,一个suspending函数调用到最后,其实就是注册一个回调.
+            方法的执行结果就是通过这个回调来处理.
+            当回调注册完毕之后,当前的线程就没有必要再等待下去了,接下来就是方法返回,结束调用.【这句话的意思就是:协程让出线程的使用权限,使线程回到线程池中以便其他协程来使用】
+            所以,大家能看到这个switch语句中,每个case都会返回。
+
+
 
         C:Continuation的父子调用
 
