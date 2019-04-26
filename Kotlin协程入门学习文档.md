@@ -50,7 +50,7 @@
 [A Java Geek 非常好的Java8 Kotlin方面的资源] (https://github.com/ajavageek)
 
 
-
+[20 Examples of Using Java’s CompletableFuture] (https://dzone.com/articles/20-examples-of-using-javas-completablefuture)
 
 
 
