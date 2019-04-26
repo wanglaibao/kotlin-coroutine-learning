@@ -16,7 +16,16 @@
 
 *   1:  Continuation and suspending functions
 
-    ```
+*   2:  CPS(Continuation Passing Style) transform and Switch SM (State Machine)
+
+*   3:  suspendCoroutine functions
+
+*   4:  coroutine Builders
+
+
+##  Continuation and suspending functions
+
+  ```
         Kotlin编译器会对suspending functions 进行特殊处理,对代码进行转换,从而实现suspending机制。
         Kotlin编译器主要做了下面这三项处理：
             1:  在挂起函数参数列表中添加Continuation类型入参作为参数列表的最后一个参数,并且返回值变为Any?
@@ -71,17 +80,6 @@
 
     ```
 
-
-
-
-*   2:  CPS(Continuation Passing Style) transform and Switch SM (State Machine)
-
-*   3:  suspendCoroutine functions
-
-*   4:  coroutine Builders
-
-
-##  Continuation and suspending functions
 
 
 
