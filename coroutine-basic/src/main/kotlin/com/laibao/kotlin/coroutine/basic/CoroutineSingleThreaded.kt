@@ -3,7 +3,15 @@ package com.laibao.kotlin.coroutine.basic
 import kotlinx.coroutines.*
 
 /**
+ * From Java To Kotlin: https://github.com/MindorksOpenSource/from-java-to-kotlin
+ *
  * kotlin-samples : https://github.com/s1monw1/kotlin-samples
+ *
+ * KOTLIN COROUTINES GUIDE :  https://kotlinexpertise.com/kotlin-coroutines-guide/
+ *
+ * CONCURRENT COROUTINES: https://kotlinexpertise.com/kotlin-coroutines-concurrency/
+ *
+ * What are Coroutines in Kotlin: https://blog.mindorks.com/what-are-coroutines-in-kotlin-bf4fecd476e9
  *
  * Concurrent Programming Style
  *
