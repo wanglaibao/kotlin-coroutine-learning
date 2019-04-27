@@ -3,6 +3,8 @@ package com.laibao.kotlin.coroutine.basic
 import kotlinx.coroutines.*
 
 /**
+ * 对 Go 语言的综合评价 : http://www.yinwang.org/blog-cn/2014/04/18/golang
+ *
  * From Java To Kotlin: https://github.com/MindorksOpenSource/from-java-to-kotlin
  *
  * kotlin-samples : https://github.com/s1monw1/kotlin-samples

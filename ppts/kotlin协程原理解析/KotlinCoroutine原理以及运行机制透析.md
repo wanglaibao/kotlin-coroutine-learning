@@ -65,7 +65,7 @@
 
         下面对编译之后的方法进行必要的说明以方便理解
 
-        A:Continuation：函数参数和匿名内部类
+        Continuation：函数参数和匿名内部类
             suspending函数编译之后薪增加Continuation类型参数,并且返回值类型变为Any?
 
                 fun postItem(item: Item, cont: Continuation): Any?
@@ -135,8 +135,11 @@
                  并且这个类会被传递给这个suspending函数所调用的其它suspending函数,
                  这些子函数可以通过Continuation回调父函数以恢复暂停的程序。
 
-        B:Switch状态机
+```
 
+##  CPS(Continuation Passing Style) transform and Switch SM (State Machine)
+
+        Switch状态机:
             suspending函数编译之后,会将原来的函数体变为一个由switch语句构成的状态机：
 
             switch (sm.label) {
@@ -172,22 +175,120 @@
             子suspending函数(requestToken,createPost等)会将sm设置进回调接口.
             当回调发生,并且suspending方法完成执行时sm会回调它所对应的suspending函数(本例中为postItem),
             并根据label中的值执行对应case中的语句.从而实现程序执行的恢复.
-            上面这几段内容解释了suspending函数是如何暂停的,以及又是如何恢复的问题
+            上面这几段内容解释了suspending函数是如何暂停的,以及又是如何恢复的问题.
+
+            接下来逐行解释switch (sm.label)的代码块的逻辑,以便更好的理解
 
 
-        C:Continuation的父子调用
+            case 0
+
+                首先,在case 0中,通过sm.item = item将入参item保存在状态机实例sm(类型为ThisSM,实现Continuation接口)中,
+                以使后续调用能够通过Continuaton获得入参.然后通过sm.label = 1设置下一步的状态.
+                从后续的代码中也可以看到,在每个case中,都会将sm.label设置为下一个case的值,这样在通过Continuation(就是sm)回调时,
+                就知道下一步要调用哪个方法了.接下来就是调用requestToken方法,可以看到在编译之后requestToken多了一个Continuation类型的入参.
+
+            case 1
+
+                当requestToken设置的回调被触发时,通过sm回调postItem函数.此时label=1因此执行case 1.
+                通过调用val item = sm.item,从sm中获取参数item.
+                通过调用val token = sm.result as Token获取requestToken方法的返回值token.
+                通过调用sm.label = 2将label设置为下一步的case.
+                调用createPost(token, item, sm)
+
+            case 2
+
+                同case 1的内容类似略.
+
+            case 3
+
+                return sm.result as PostResult 从Continuation中获得返回值.
 
 
-        D:小结
+        Continuation的父子调用:
 
+            到目前为止,我们已经知道了suspending函数是通过CPS和SM机制来实现协程的挂起[suspending]和恢复[resume].
+
+            但有一个细节没有解释:一个suspending函数对应的Continuation是如何知道它是应该回调当前的suspending函数,
+
+            还是应该回调上一级的suspending函数的呢?
+
+
+
+            在一个suspending函数中创建它所对应的Continuation时,
+            会将从入参传入的Continuation作为父Continuation引入新创建的Continuation.
+            因为每个suspending方法所创建的Continuation是基于CoroutineImpl的,所以看一下CoroutineImpl的源代码
+
+
+            abstract class CoroutineImpl(
+                arity: Int,
+                @JvmField
+                protected var completion: Continuation<Any?>?
+            ) : Lambda<Any?>(arity), Continuation<Any?> {
+
+                @JvmField
+                protected var label: Int = if (completion != null) 0 else -1
+
+                override fun resume(value: Any?) {
+                    processBareContinuationResume(completion!!) {
+                        doResume(value, null)
+                    }
+                }
+
+                override fun resumeWithException(exception: Throwable) {
+                    processBareContinuationResume(completion!!) {
+                        doResume(null, exception)
+                    }
+                }
+
+                protected abstract fun doResume(data: Any?, exception: Throwable?): Any?
+
+            }
+
+            @kotlin.internal.InlineOnly
+            internal inline fun processBareContinuationResume(completion: Continuation<*>, block: () -> Any?) {
+                try {
+                    val result = block()
+                    if (result !== COROUTINE_SUSPENDED) {
+                        @Suppress("UNCHECKED_CAST")
+                        (completion as Continuation<Any?>).resume(result)
+                    }
+                } catch (t: Throwable) {
+                    completion.resumeWithException(t)
+                }
+            }
+
+
+            CoroutineImpl构造函数有一个Continuation类型的入参completion, 这个completion代表的是父Continuation.
+
+            调用resume函数的时候会先调用processBareContinuationResume函数.
+
+            processBareContinuationResume的第一个入参是父Continuation,第二个入参block就是doResume函数,也就是对当前suspending函数的调用.
+
+            如果当前suspending函数的返回结果不是COROUTINE_SUSPENDED,即执行成功时,就会通过调用completion.resume(result)的方式回调父Continuation,并返回执行结果。
+
+
+        小结:
+
+            Kotlin Coroutine suspending 函数在编译之后会发生显著变化:
+                首先,suspending方法增加一个Continuation类型的入参,用于实现回调.
+
+                返回值变为Any?类型,既可以表示真实的结果,也可表示Coroutine的执行状态.
+
+                然后,编译器会为这个suspending函数生产一个类型为Continuation的匿名内部类(扩展CoroutineImpl),
+
+                用于对这个suspending函数自身的回调,并可以在这个suspending函数执行完毕之后,
+
+                回调这个suspending函数上一级的父函数。
+
+                最后,这个suspending函数如果调用其它suspending函数,会将这些调用转换为一个switch形式的状态机,
+
+                每个case表示对一个suspending子函数的调用或最后的return.
+
+                同时,生成的Continuation匿名内部类会保存下一步需要调用的suspending函数的label值,
+
+                表示应该执行switch中的哪个case,从而串联起整个调用过程
 
     ```
-
-
-
-
-##  CPS(Continuation Passing Style) transform and Switch SM (State Machine)
-
 
 ##  suspendCoroutine functions
 
