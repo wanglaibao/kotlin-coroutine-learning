@@ -165,6 +165,15 @@
             所以,大家能看到这个switch语句中,每个case都会返回。
 
 
+            上述switch (sm.label){}代码块中
+            每个case都有调用sm.label = N(除了最后一个 case).
+            这里的N表示的是当前case的下一个case所对应的label标签的值.
+            这个值被记录在sm实例中,然后sm会做为Continuation类型的参数传递个当前case中的子suspending方法。
+            子suspending函数(requestToken,createPost等)会将sm设置进回调接口.
+            当回调发生,并且suspending方法完成执行时sm会回调它所对应的suspending函数(本例中为postItem),
+            并根据label中的值执行对应case中的语句.从而实现程序执行的恢复.
+            上面这几段内容解释了suspending函数是如何暂停的,以及又是如何恢复的问题
+
 
         C:Continuation的父子调用
 
