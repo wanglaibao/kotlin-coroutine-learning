@@ -1,4 +1,6 @@
-# Kotlin Coroutine 原理以及运行机制透析
+#                           Kotlin Coroutine 原理以及运行机制透析
+
+*   [Kotlin/KEEP kotlin 协程实现规范] (https://github.com/Kotlin/KEEP/blob/master/proposals/coroutines.md)
 
 ## 示例代码
 
@@ -366,10 +368,79 @@
 
 ##  coroutine Builders
 
+```
+    suspendCoroutine函数可以看做是Kotlin Coroutine执行调用的终点,
+
+    接下来要讨论的是Kotlin Coroutine调用的起点.
+
+    因为suspending函数不能直接被普通函数调用.
+
+    如果普通函数要调用suspending函数的话就必须通过Coroutine Builder来创建协程，并且在协程内部调用suspending函数.
+
+    Kotlin Coroutine核心和扩展模块提供了多种Coroutine Builder.
+
+    这些Coroutine Builder有着不同的作用:
+
+    runBlocking{}能够挂起当前线程,
+
+    mono{}可以将Coroutine转换为Spring Reactor Project中的Mono类型.
+
+    /**
+     * Creates cold [mono][Mono] that will run a given [block] in a coroutine.
+     * Every time the returned mono is subscribed, it starts a new coroutine.
+     * Coroutine returns a single, possibly null value. Unsubscribing cancels running coroutine.
+     *
+     * | **Coroutine action**                  | **Signal to sink**
+     * | ------------------------------------- | ------------------------
+     * | Returns a non-null value              | `success(value)`
+     * | Returns a null                        | `success`
+     * | Failure with exception or unsubscribe | `error`
+     *
+     * Coroutine context is inherited from a [CoroutineScope], additional context elements can be specified with [context] argument.
+     * If the context does not have any dispatcher nor any other [ContinuationInterceptor], then [Dispatchers.Default] is used.
+     * The parent job is inherited from a [CoroutineScope] as well, but it can also be overridden
+     * with corresponding [coroutineContext] element.
+     *
+     * @param context context of the coroutine.
+     * @param block the coroutine code.
+     */
+    fun <T> CoroutineScope.mono(
+        context: CoroutineContext = EmptyCoroutineContext,
+        block: suspend CoroutineScope.() -> T?
+    ): Mono<T> = Mono.create { sink ->
+        val newContext = newCoroutineContext(context)
+        val coroutine = MonoCoroutine(newContext, sink)
+        sink.onDispose(coroutine)
+        coroutine.start(CoroutineStart.DEFAULT, coroutine, block)
+    }
 
 
+    从上面的代码中我们可以看到最后一个入参block是一个带接收者的suspending Lamdba.
 
+    在编译之后,其主体部分也会被转换为switch形式的状态机.
 
+    不同于对suspending函数的处理,编译器并没有为suspending Lambda创建类型为Continuation的匿名内部类,
+
+    而是由Lambda自己作为Continuation实现(每个Lambda在编译之后会生成一个匿名内部类).
+
+    除了对suspending Lambda的处理以外,
+
+```
+
+## 未来展望
+
+```
+    从业内的发展趋势看,反应式编程是Java社区应对高并发场景的未来的主要选择,
+
+    但直接使用反应式编程技术(Spring Reactor,RxJava2),还是有很多不方便的地方.所以Kotlin Coroutine的出现及时有效地解决了这些问题.
+
+    相信Kotlin Coroutine将会越来越多地出现在JVM平台服务器端和Android等领域的应用中。所以,理解和消化Kotlin Coroutine实现原理的意义十分重大.
+
+    另外,Coroutine并不是Kotlin的专利,很多其它语言都有Coroutine这个概念,比如C#,Go,Lua,Python,Javascript等.
+
+    Kotlin的实现原理也借鉴了很多其它的语言.所以理解Kotlin Coroutine的原理,也能够帮助理解其它语言的Coroutine技术的底层原理.
+
+```
 
 
 
