@@ -291,6 +291,77 @@
     ```
 
 ##  suspendCoroutine functions
+```
+
+    以上小节介绍了Kotlin Coroutine suspending函数实现挂起和恢复的原理,
+
+    但函数调用有头有尾,suspending函数调用的结束在哪里呢?
+
+    我们知道Kotlin Coroutine还是基于Callback机制实现的.
+
+    所以,suspending函数调用到最后,就应当是将Kotlin Coroutine自己的回调接口Continuation注册到某种Future技术的回调接口中.
+
+    但是我们在普通的Suspending函数中压根访问不到Continuation,那究竟是如何做到的呢?
+
+    这里是通过suspendCoroutine函数来实现的.
+
+    suspendCoroutine函数是kotlin-stdlib-common标准库的一部分,
+
+    它可以在kotlin-stdlib-common模块中的CoroutinesLibrary.kt文件中找到.
+
+    /**
+     * Obtains the current continuation instance inside suspend functions and suspends
+     * currently running coroutine.
+     *
+     * In this function both [Continuation.resume] and [Continuation.resumeWithException] can be used either synchronously in
+     * the same stack-frame where suspension function is run or asynchronously later in the same thread or
+     * from a different thread of execution. Repeated invocation of any resume function produces [IllegalStateException].
+     */
+    @SinceKotlin("1.1")
+    public suspend inline fun <T> suspendCoroutine(crossinline block: (Continuation<T>) -> Unit): T =
+        suspendCoroutineOrReturn { c: Continuation<T> ->
+            val safe = SafeContinuation(c)
+            block(safe)
+            safe.getResult()
+        }
+
+    suspendCoroutine函数的入参是一个名称为block的函数类型: (Continuation<T>) -> Unit
+
+    这个函数类型有一个类型为Continuation的入参.
+
+    所以可以拿到Continuation,并且将其注册到某种Future回调机制中了。
+
+    看一下Kotlin Coroutine官方文档中的示例,演示了如何使用suspendCoroutine函数
+
+    将CompletableFuture同Kotlin Coroutine集成:
+
+    suspend fun <T> CompletableFuture<T>.await(): T = suspendCoroutine<T> { cont: Continuation<T> ->
+                  whenComplete { result, exception ->
+                    if (exception == null) // the future has been completed normally
+                      cont.resume(result)
+                    else // the future has completed with an exception
+                      cont.resumeWithException(exception)
+                  }
+    }
+
+    从上面的代码可以看出,正是因为suspendCoroutine函数的入参block: (Continuation<T>) -> Unit
+
+    拥有一个Continuation类型的入参,才可以使得我们使用suspendCoroutine函数与各种Future回调机制集成.
+
+    进一步观察suspendCoroutine函数内部的实现原理,suspendCoroutine函数内部调用了suspendCoroutineOrReturn函数,
+
+    但直接观察源码无法了解suspendCoroutineOrReture函数的实现：
+
+    inline suspend fun <T> suspendCoroutineOrReturn(crossinline block: (Continuation<T>) -> Any?): T =
+        throw NotImplementedError("Implementation is intrinsic")
+
+
+    suspendCoroutineOrReturn函数只起到一个标记的作用,实现细节隐藏在了编译阶段.
+
+    但它的实现方式又和普通的suspending函数不同,所以要定义一个特殊函数,以区别对待.
+
+
+```
 
 
 ##  coroutine Builders
