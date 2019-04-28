@@ -137,16 +137,40 @@
         context: CoroutineContext = EmptyCoroutineContext,
         block: suspend CoroutineScope.() -> T?
     ): Mono<T> = Mono.create { sink ->
+        // 创建一个新的CoroutineContext
         val newContext = newCoroutineContext(context)
+
+        // 创建一个新的MonoCoroutine
+        // MonoCoroutine实现了Disposable接口
         val coroutine = MonoCoroutine(newContext, sink)
+
         sink.onDispose(coroutine)
+
         coroutine.start(CoroutineStart.DEFAULT, coroutine, block)
     }
+
+
+    mono{}函数最主要的部分都集中在对Mono.create函数的调用.
+
+    Mono.create函数会创建出一个Mono对象,
+
+    当这个Mono对象的subscribe函数被执行的时候,
+
+    传入到Mono.create函数的Consumer就会被调用.此时下面的代码就会被执行
+
+        { sink ->
+            val newContext = newCoroutineContext(context)
+            val coroutine = MonoCoroutine(newContext, sink)
+            sink.onDispose(coroutine)
+            coroutine.start(CoroutineStart.DEFAULT, coroutine, block)
+        }
+
+    上述代码块创建了一个 Coroutine对象[MonoCoroutine],并且sink对象被传入到MonoCoroutine中,接着执行该协程.
 
     private class MonoCoroutine<in T>(
         parentContext: CoroutineContext,
         private val sink: MonoSink<T>
-    ) : AbstractCoroutine<T>(parentContext, true), Disposable {
+    ) : AbstractCoroutine<T>(parentContext, true),Disposable {
         var disposed = false
 
         override fun onCompleted(value: T) {
@@ -171,12 +195,15 @@
         override fun isDisposed(): Boolean = disposed
     }
 
+    MonoCoroutine继承了AbstractCoroutine抽象类,并且实现了Disposable接口,同时构造函数入参传入了MonoSink.
+
+    MonoCoroutine实现了两个在AbstractCoroutine声明的重要函数：
+
+    onCompleted{}和onCompletedExceptionally{}这两个函数都是回调函数.
+
+    当MonoCoroutine在执行完毕之后,即这两个回调函数被调用时,会通过调用MonoSink将结果输出给Subscriber.
 
 ```
-
-
-
-
 
 ### Publisher<T>.awaitXXX{}扩展函数
 
