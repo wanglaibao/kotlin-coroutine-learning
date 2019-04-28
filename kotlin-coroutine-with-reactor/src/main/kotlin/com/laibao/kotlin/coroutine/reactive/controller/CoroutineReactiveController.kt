@@ -3,6 +3,8 @@ package com.laibao.kotlin.coroutine.reactive.controller
 import com.laibao.kotlin.coroutine.reactive.repository.ReactiveAuditRepository
 import com.laibao.kotlin.coroutine.reactive.repository.ReactiveMessageRepository
 import com.laibao.kotlin.coroutine.reactive.repository.ReactivePeopleRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.reactive.awaitSingle
@@ -21,24 +23,17 @@ class CoroutineReactiveController {
 
     lateinit var auditRepository: ReactiveAuditRepository
 
+    //可以使用CoroutineScope(Dispatchers.Default)来替换GlobalScope
     @GetMapping("/coroutine/{personId}")
     fun getMessages(@PathVariable personId: String): Mono<String> = GlobalScope.mono(Unconfined){
         val person = peopleRepository.findById(personId).awaitSingle()
+
         val lastLogin = auditRepository.findByEmail(person.email).awaitSingle().eventDate
+
         val numberOfMessages = messageRepository.countByMessageDateGreaterThanAndEmail(lastLogin, person.email).awaitSingle()
 
         val message:String? = "Hello ${person.name}, you have $numberOfMessages messages since $lastLogin"
 
         message
     }
-       /*
-        mono(Unconfined) {
-        val person = peopleRepository.findById(personId).awaitSingle()
-        val lastLogin = auditRepository.findByEmail(person.email).awaitSingle().eventDate
-        val numberOfMessages = messageRepository.countByMessageDateGreaterThanAndEmail(lastLogin, person.email).awaitSingle()
-
-        val message:String? = "Hello ${person.name}, you have $numberOfMessages messages since $lastLogin"
-
-        message
-    }*/
 }
