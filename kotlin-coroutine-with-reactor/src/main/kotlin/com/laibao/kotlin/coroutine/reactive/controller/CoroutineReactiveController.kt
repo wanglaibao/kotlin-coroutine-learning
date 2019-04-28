@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.reactive.awaitFirstOrDefault
 import kotlinx.coroutines.reactive.awaitSingle
 import kotlinx.coroutines.reactor.mono
 import org.springframework.web.bind.annotation.GetMapping
@@ -26,13 +27,14 @@ class CoroutineReactiveController {
     //可以使用CoroutineScope(Dispatchers.Default)来替换GlobalScope
     @GetMapping("/coroutine/{personId}")
     fun getMessages(@PathVariable personId: String): Mono<String> = GlobalScope.mono(Unconfined){
-        val person = peopleRepository.findById(personId).awaitSingle()
+
+        val person = peopleRepository.findById(personId).awaitFirstOrDefault(null)?: throw NoSuchElementException("No person can be found by $personId")
 
         val lastLogin = auditRepository.findByEmail(person.email).awaitSingle().eventDate
 
         val numberOfMessages = messageRepository.countByMessageDateGreaterThanAndEmail(lastLogin, person.email).awaitSingle()
 
-        val message:String? = "Hello ${person.name}, you have $numberOfMessages messages since $lastLogin"
+        val message = "Hello ${person.name}, you have $numberOfMessages messages since $lastLogin"
 
         message
     }
