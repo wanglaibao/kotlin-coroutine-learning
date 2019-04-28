@@ -208,6 +208,15 @@
 ### Publisher<T>.awaitXXX{}扩展函数
 
 ```
+    awaitFirst{},awaitFirstOrDefault{},awaitSingle{},awaitOne{}等扩展函数都定义在kotlinx-coroutines-reactive中的Await.kt文件中.
+
+    这些扩展函数都是挂起函数.awaitXXX系列函数可以看作是将Coroutine执行结果转换为Mono或Flux的函数.
+
+    这些函数真正的实现集中在了awaitOne函数中.
+
+```
+
+```
     /**
      * Awaits for the first value from the given publisher without blocking a thread and
      * returns the resulting value or throws the corresponding exception if this publisher had produced error.
@@ -345,11 +354,72 @@
     }
 
 
+    /**
+     * Suspends coroutine similar to [suspendCoroutine], but provide an implementation of [CancellableContinuation] to
+     * the [block]. This function throws [CancellationException] if the coroutine is cancelled or completed while suspended.
+     */
+    public suspend inline fun <T> suspendCancellableCoroutine(
+        crossinline block: (CancellableContinuation<T>) -> Unit
+    ): T =
+        suspendCoroutineUninterceptedOrReturn { uCont ->
+            val cancellable = CancellableContinuationImpl(uCont.intercepted(), resumeMode = MODE_CANCELLABLE)
+            // NOTE: Before version 1.1.0 the following invocation was inlined here, so invocation of this
+            // method indicates that the code was compiled by kotlinx.coroutines < 1.1.0
+            // cancellable.initCancellability()
+            block(cancellable)
+            cancellable.getResult()
+        }
+
+
+    public interface CancellableContinuation<in T> : Continuation<T>
+
+
+    下面结合以上源码对核心函数awaitOne{}进行必要的说明
+
+        1:suspendCancellableCoroutine{}函数的调用
+
+            它是一个特殊的suspending函数和suspendCoroutine{}一样不同于普通的suspending函数,
+
+            通过这个函数开发人员可以获得CancellableContinuation引用,用来与第三方技术进行集成。
+
+        2:subscribe{}函数的调用
+
+            由于awaitOne{}是Publisher的扩展函数,所以可以在awaitOne{}函数中调用Publisher接口中的其他函数.
+
+            同时调用subscribe函数的时候传入一个Subscriber接口的匿名内部类,后面大部分代码都是关于如何实现这个匿名内部类的.
+
+            我们知道对subscribe函数的调用会触发Publisher的执行.
+
+            这也就是说当我们调用Mono对象的awaitSingle()函数的时候,就会使Mono开始执行.
+
+            在Spring WebFlux框架的Web应用中,当请求【比如HTTP请求】调用getNumberOfMessages并且得到Mono结果的时候,Spring WebFlux框架才会去调用Mono的subscribe函数.
+
+        3:cont.resume{}的调用
+
+            cont.resume{}的调用发生在Subscriber的onNext函数中,
+
+            Publisher的每个结果都会通过回调onNext函数通知给Subscriber.
+
+            在onNext函数里面,当获取到Publisher的结果之后,需要将结果传递给Continuation.
+
+            办法就是通过Continuation的resume函数来实现的,这样Publisher的结果便传递给了Kotlin Coroutine
+
+
 ```
 
+### 总结
 
+```
+    Kotlin Coroutine与Spring Reactor 的整合的原理并不复杂。
+    主要是实现两个方向的转换：Kotlin Coroutine 向 Mono 的转换和 Mono 向 Kotlin Coroutine 的转换。
+    Kotlin Coroutine 向 Mono 的转换是通过 Mono.create 方法以及 MonoSink 接口实现的。
+    Kotlin Coroutine 通过 MonoSink 接口，将执行结果输出给 Subscriber。
+    Mono 向 Kotlin Coroutine 的转换是通过使用 suspendCancellableCoroutine 方法获取到 Continuation 引用。
+    再通过调用 Publisher.subscribe 方法，传入一个自定义的 Subscriber。
+    通过 Subscriber.onNext 方法获取到 Publisher 的执行结果，并将这个执行结果传递给 Continuation。
+    从而是 Kotlin Coroutine 获得了 Mono 的执行结果，完成了转换过程。
 
-
+```
 
 
 
