@@ -6,6 +6,7 @@ import com.laibao.kotlin.coroutine.reactive.entity.Person
 import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Mono
+import java.time.LocalDateTime
 
 @Repository
 interface ReactivePeopleRepository: ReactiveCrudRepository<Person, String>
@@ -17,5 +18,5 @@ interface ReactiveAuditRepository: ReactiveCrudRepository<Audit, String> {
 
 @Repository
 interface ReactiveMessageRepository: ReactiveCrudRepository<Message, String> {
-    fun countByMessageDateGreaterThanAndEmail(messageDate: java.time.LocalDateTime, email: String): Mono<Long>
+    fun countByMessageDateGreaterThanAndEmail(messageDate: LocalDateTime, email: String): Mono<Long>
 }
