@@ -410,14 +410,21 @@
 ### 总结
 
 ```
-    Kotlin Coroutine与Spring Reactor 的整合的原理并不复杂。
-    主要是实现两个方向的转换：Kotlin Coroutine 向 Mono 的转换和 Mono 向 Kotlin Coroutine 的转换。
-    Kotlin Coroutine 向 Mono 的转换是通过 Mono.create 方法以及 MonoSink 接口实现的。
-    Kotlin Coroutine 通过 MonoSink 接口，将执行结果输出给 Subscriber。
-    Mono 向 Kotlin Coroutine 的转换是通过使用 suspendCancellableCoroutine 方法获取到 Continuation 引用。
-    再通过调用 Publisher.subscribe 方法，传入一个自定义的 Subscriber。
-    通过 Subscriber.onNext 方法获取到 Publisher 的执行结果，并将这个执行结果传递给 Continuation。
-    从而是 Kotlin Coroutine 获得了 Mono 的执行结果，完成了转换过程。
+    Kotlin Coroutine与Spring Reactor的整合的原理并不复杂.
+
+    主要是实现两个方向的转换:Kotlin Coroutine向Mono的转换和Mono向Kotlin Coroutine的转换.
+
+    Kotlin Coroutine向Mono的转换是通过Mono.create{}函数以及MonoSink接口实现的.
+
+    Kotlin Coroutine通过MonoSink接口,将执行结果输出给Subscriber.
+
+    Mono向Kotlin Coroutine的转换是通过suspendCancellableCoroutine{}函数获取到Continuation引用.
+
+    再通过调用Publisher.subscribe{}函数,传入一个自定义的Subscriber.
+
+    通过Subscriber.onNext{}函数获取到Publisher的执行结果,并将这个执行结果传递给Continuation.
+
+    从而使得Kotlin Coroutine获得了Mono的执行结果,完成了转换过程。
 
 ```
 
