@@ -219,7 +219,9 @@
 
 
             在一个suspending函数中创建它所对应的Continuation时,
+
             会将从入参传入的Continuation作为父Continuation引入新创建的Continuation.
+
             因为每个suspending方法所创建的Continuation是基于CoroutineImpl的,所以看一下CoroutineImpl的源代码
 
 
@@ -271,6 +273,9 @@
             如果当前suspending函数的返回结果不是COROUTINE_SUSPENDED,即执行成功时,就会通过调用completion.resume(result)的方式回调父Continuation,并返回执行结果。
 
 
+![image](./Kotlin_Coroutine_Suspending_functioni_父子调用.png)
+
+```
         小结:
 
             Kotlin Coroutine suspending 函数在编译之后会发生显著变化:
@@ -292,7 +297,9 @@
 
                 表示应该执行switch中的哪个case,从而串联起整个调用过程
 
-    ```
+```
+
+
 
 ##  suspendCoroutine functions
 ```
