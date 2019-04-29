@@ -26,7 +26,7 @@ class CoroutineReactiveController {
 
     //可以使用CoroutineScope(Dispatchers.Default)来替换GlobalScope
     @GetMapping("/coroutine/{personId}")
-    fun getMessages(@PathVariable personId: String): Mono<String> = GlobalScope.mono(Unconfined){
+    suspend fun getMessages(@PathVariable personId: String): Mono<String> = GlobalScope.mono(Unconfined){
 
         val person = peopleRepository.findById(personId).awaitFirstOrDefault(null)?: throw NoSuchElementException("No person can be found by $personId")
 

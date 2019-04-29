@@ -66,6 +66,15 @@
     This modifier indicates to the compiler that the code in the given scope—function or lambda—will work using continuations. So whenever a suspending computation is compiled, its bytecode will be a big continuation. For example, consider this suspending function:
 ```
  ![image](./tutorialwing-kotlin-concurrency-kotlin.png)
+```
+    from the image above,we know that our function’s execution will happen in three steps.
+
+    First, the function will be started and the log will be printed, then the invocation of fetchProfile() will cause the execution to suspend.
+
+    Once fetchProfile() has ended, your function will calculate the age of the user, and then the execution will suspend again for validateTerms() to be executed.
+
+    The last step will occur once the terms are validated when the function resumes one last time, and all the data from the previous steps are used to create the summary of the user.
+```
 
 *   State machine
 *   Labels

@@ -1,5 +1,6 @@
 package com.laibao.kotlin.coroutine.basic
 
+import io.netty.handler.codec.http.HttpHeaderValues.APPLICATION_JSON
 import kotlinx.coroutines.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
@@ -64,10 +65,25 @@ class DummyServiceCoroutineTest {
             println("我是王八蛋")
         }
 
+        val detailMsg = getDetailMessage(10000)
+        println("the detailMsg is $detailMsg")
     }
 
     suspend fun isValidUser(userId:String):Boolean = withContext(Dispatchers.Default) {
         true
+    }
+
+    suspend fun getDetailMessage(id: Long):String = coroutineScope {
+
+        val post = async {
+            "金戈"
+        }
+
+        val count = async {
+           1234567890
+        }
+
+        if (id > 100) "${post.await()} ${count.await()}" else "阿拉丁 1000"
     }
 }
 
