@@ -25,7 +25,6 @@
 * Reactive Streams and RxJava2 and Reactor
 
 ##  Java的线程技术栈的困惑
-
 ```
     传统的Java应用提高并发的主要方式就是开启更多的线程,但线程太多会导致资源的浪费，太低又容易导致并发不够.
 
@@ -39,9 +38,7 @@
 
     那恐怕还是难以顺畅使用Kotlin Coroutine来进行异步化编程.
 ```
-
 ##  What is the problem that Coroutine trying to solve
-
 ```
     coroutine is a mechanism【机制】 to optimise【优化】
 
@@ -49,7 +46,6 @@
 
     coroutine is trying to solve the problem of effectively utilising resources (thread) using cooperative multitasking.
 ```
-
 ### Kotlin Coroutine 有关的异步并发库
 
 *   kotlinx-coroutines-core
@@ -65,7 +61,6 @@
 *   kotlinx-coroutines-rx1
 
 ### Coroutine Builder
-
 ```
     Coroutine Builder顾名思义,是用来创建Coroutin 的.
 
@@ -80,24 +75,17 @@
     任何Coroutine的调用都是从Coroutine Builder开始的.
 
     下面主要介绍几个常见的Coroutine Builder函数的用法
-
 ```
-
 *   runBlocking{}扩展函数
-
 ```
     这个Coroutine Builder的作用是阻塞调用它的线程
 ```
-
 *   launch{}扩展函数
-
 ```
     这个Coroutine Builder的作用是创建一个Coroutine并执行它,并返回一个Job对象,用于控制这个Coroutine的执行但没有结果的返回.
     Job对象提供了cancel(),join()等函数,用来控制Job的执行.
 ```
-
 *   async{}扩展函数
-
 ```
     与launch{}函数类似,async{}的作用也是创建一个Coroutine并执行它.
 
@@ -105,9 +93,7 @@
 
     async{}返回的是Deferred<T>,可以通过调用其提供的await()函数得到Coroutine的执行结果.
 ```
-
 *   配合Spring Reactor框架使用的mono{}扩展函数
-
 ```
     mono与前几个Coroutine Builder有所不同.
 
@@ -117,12 +103,9 @@
 
     下面的flux{}函数一样
 ```
-
 *   配合Spring Reactor使用的flux{}扩展函数
 
-
 ### 所有Coroutine Builder方法参数补充说明
-
 ```
     所有的Coroutine Builder方法的第一参数都是CoroutineContext.
 
@@ -150,7 +133,6 @@
 
     在第一个suspending挂起点之后,用哪个线程执行就是由suspend function方法决定了.
 ```
-
 ### suspend functions
 
 *   delay()
