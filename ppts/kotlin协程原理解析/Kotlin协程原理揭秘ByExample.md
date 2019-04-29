@@ -64,10 +64,8 @@
     the standard library, and the coroutines library. So, the only relevant change from a language perspective is the addition of the suspend modifier.
 
     This modifier indicates to the compiler that the code in the given scope—function or lambda—will work using continuations. So whenever a suspending computation is compiled, its bytecode will be a big continuation. For example, consider this suspending function:
-
-    ![image](./tutorialwing-kotlin-concurrency-kotlin.png)
-
 ```
+ ![image](./tutorialwing-kotlin-concurrency-kotlin.png)
 
 *   State machine
 *   Labels
