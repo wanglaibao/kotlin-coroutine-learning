@@ -1,4 +1,5 @@
 #                                   Kotlin协程入门之前生今世【诞生由来】
+
 *   [Coroutines in Kotlin 多看几遍] (http://blog.alexnesterov.com/post/coroutines/)
 
 *   [Kotlin coroutines and Spring 5] (http://blog.alexnesterov.com/post/kotlin-coroutines-and-spring-5/)
@@ -10,7 +11,9 @@
 *   [Kotlin Coroutine context and dispatchers] (https://github.com/Kotlin/kotlinx.coroutines/blob/master/coroutines-guide.md#coroutine-context-and-dispatchers)
 
 *   [Kotlin CoroutineDispatcher Javadoc] (https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-dispatcher/index.html)
+
 *
+
 *
 
 ### What about Futures for non-blocking calls
@@ -22,6 +25,7 @@
 * Reactive Streams and RxJava2 and Reactor
 
 ##  Java的线程技术栈的困惑
+
 ```
     传统的Java应用提高并发的主要方式就是开启更多的线程,但线程太多会导致资源的浪费，太低又容易导致并发不够.
 
@@ -44,13 +48,11 @@
     and then execute a function (subroutine) in non-preemptive【先发制人的】 multi-tasking way.
 
     coroutine is trying to solve the problem of effectively utilising resources (thread) using cooperative multitasking.
-
 ```
-
 
 ### Kotlin Coroutine 有关的异步并发库
 
-*   核心模块 kotlinx-coroutines-core
+*   kotlinx-coroutines-core
 
 *   kotlinx-coroutines-jdk8
 
@@ -102,7 +104,6 @@
     不同的是launch{}返回的Job,其只能控制Coroutine的执行,但是不能得到任何返回结果.
 
     async{}返回的是Deferred<T>,可以通过调用其提供的await()函数得到Coroutine的执行结果.
-
 ```
 
 *   配合Spring Reactor框架使用的mono{}扩展函数
@@ -148,7 +149,6 @@
     Unconfined意思就是不限定,在第一个suspending挂起点之前,Coroutine的执行线程都是调用的线程.
 
     在第一个suspending挂起点之后,用哪个线程执行就是由suspend function方法决定了.
-
 ```
 
 ### suspend functions
