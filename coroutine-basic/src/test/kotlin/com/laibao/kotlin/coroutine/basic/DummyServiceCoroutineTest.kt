@@ -1,12 +1,10 @@
 package com.laibao.kotlin.coroutine.basic
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
+import java.lang.Runnable
 import java.time.Duration
 import java.time.Instant
 import kotlin.concurrent.thread
@@ -54,6 +52,22 @@ class DummyServiceCoroutineTest {
         val timeElapsed = duration.toMillis()
         println("Time taken by the co-routine block is $timeElapsed milliseconds")
         assertThat(timeElapsed).isGreaterThanOrEqualTo(maxTimeElapsed)
+    }
+
+
+    @Test
+    fun testValidUser() = runBlocking {
+
+        if (isValidUser("jinge")) {
+            println("我是金戈")
+        }else{
+            println("我是王八蛋")
+        }
+
+    }
+
+    suspend fun isValidUser(userId:String):Boolean = withContext(Dispatchers.Default) {
+        true
     }
 }
 
