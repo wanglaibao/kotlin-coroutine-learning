@@ -17,7 +17,7 @@ class BlockingController {
     lateinit var messageRepository: MessageRepository
 
     @GetMapping("/blocking/{personId}")
-    fun getMessagesFor(@PathVariable personId: String): String {
+    fun getMessages(@PathVariable personId: String): String {
         val person = peopleRepository.findById(personId)
                                     .orElseThrow { NoSuchElementException("Not found") }
 

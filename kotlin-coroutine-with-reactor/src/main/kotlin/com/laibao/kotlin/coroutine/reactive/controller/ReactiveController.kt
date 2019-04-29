@@ -19,7 +19,7 @@ class ReactiveController {
 
 
     @GetMapping("/reactive/{personId}")
-    fun getMessagesFor(@PathVariable personId: String): Mono<String> {
+    fun getMessages(@PathVariable personId: String): Mono<String> {
         return peopleRepository.findById(personId)
                 .switchIfEmpty(Mono.error(NoSuchElementException()))
                 .flatMap { person -> auditRepository.findByEmail(person.email)
