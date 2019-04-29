@@ -104,7 +104,7 @@
             使用了Reactor的API和Spring Data中的ReactiveRepository.
 
             @GetMapping("/reactive/{personId}")
-            fun getMessagesFor(@PathVariable personId: String): Mono<String>{
+            fun getMessages(@PathVariable personId: String): Mono<String>{
               return peopleRepository.findById(personId)
                                     .switchIfEmpty(Mono.error(NoSuchElementException()))
                                     .flatMap { person -> auditRepository.findByEmail(person.email)
@@ -150,14 +150,52 @@
 
      B:使用Kotlin Coroutine来简化
 
+        @GetMapping("/coroutine/{personId}")
+        fun getMessages(@PathVariable personId: String): Mono<String> = GlobalScope.mono(Unconfined){
 
+            val person = peopleRepository.findById(personId).awaitFirstOrDefault(null)?: throw NoSuchElementException("No person can be found by $personId")
 
+            val lastLogin = auditRepository.findByEmail(person.email).awaitSingle().eventDate
+
+            val numberOfMessages = messageRepository.countByMessageDateGreaterThanAndEmail(lastLogin, person.email).awaitSingle()
+
+            val message = "Hello ${person.name}, you have $numberOfMessages messages since $lastLogin"
+
+            message
+        }
+
+        从上面的代码逻辑中,我们可以看到经过Kotlin Coroutine改造之后代码最明显的变化就是代码可读性提高了很多.
+
+        代码的可读性对所有的软件系统都是十分重要,如果代码很难让人理解,那软件系统的维护,升级工作的成本就会很高.
+
+        因此Kotlin Coroutine对异步编程的代码可读性的提升是非常有价值的.
+
+        另外需要指出的是,如果查询结果为空的话,调用awaitSingle{}函数会导致程序抛出NoSuchElementException,
+
+        并无法直接通过try{}catch{}来进行捕获(只能通过Mono的错误处理有关的回调函数来进行处理,如doOnError{},onErrorCosume{}函数等).
+
+        为了兼容查询结果可能为空的情况,使用了awaitFirstOrDefault{}函数.
 
 ```
 
 
+### 总结与展望
 
+```
+    如今面对高并发应用开发场景,Java传统的线程模型的并发处理方案显得越来越力不从心.
 
+    Java社区也意识到了这个问题,于是出现了一批提供轻量级线程解决方案的项目,如Quasar项目,OpenJDK的Project Loom提案,
+
+    也包括反应式编程技术,但这些方案都存在这样或那样的问题.
+
+    Kotlin Coroutine的出现为解决JVM平台的高并发应用开发提供了新的选择,带来了新的希望.
+
+    但我们也需要看到,Kotlin Coroutine虽然在形式上简化了异步代码的开发,但也对开发人员的使用者提出了相当的要求.
+
+    如果对Java并发,NIO,反应式编程,以及Kotlin技术栈本身缺乏足够的了解和掌握的情况下,
+
+    那恐怕还是难以顺畅使用Kotlin Coroutine的.
+```
 
 
 

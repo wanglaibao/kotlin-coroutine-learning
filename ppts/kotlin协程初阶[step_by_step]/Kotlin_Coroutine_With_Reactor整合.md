@@ -392,7 +392,7 @@
 
             这也就是说当我们调用Mono对象的awaitSingle()函数的时候,就会使Mono开始执行.
 
-            在Spring WebFlux框架的Web应用中,当请求【比如HTTP请求】调用getNumberOfMessages并且得到Mono结果的时候,Spring WebFlux框架才会去调用Mono的subscribe函数.
+            在Spring WebFlux框架的Web应用中,当请求【比如HTTP请求】调用getMessages并且得到Mono结果的时候,Spring WebFlux框架才会去调用Mono的subscribe函数.
 
         3:cont.resume{}的调用
 
