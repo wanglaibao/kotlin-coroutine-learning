@@ -2,6 +2,8 @@
 
 *   [Kotlin/KEEP kotlin 协程实现规范] (https://github.com/Kotlin/KEEP/blob/master/proposals/coroutines.md)
 
+*   [project loom] (http://cr.openjdk.java.net/~rpressler/loom/)
+
 ## 示例代码
 
 ```
