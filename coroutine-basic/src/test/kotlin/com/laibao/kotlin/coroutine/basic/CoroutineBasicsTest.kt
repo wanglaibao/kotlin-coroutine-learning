@@ -200,11 +200,28 @@ class CoroutineBasicsTest {
 
     @Test
     fun testBridgingBlockingAndNonBlockingByRunBlockingOutSide() = runBlocking<Unit>{
-        GlobalScope.launch { // launch a new coroutine in background and continue
+        println(" 111111111111111111 Thread.currentThread().name is ${Thread.currentThread().name}")
+        launch { // launch a new coroutine in background and continue
+            println(" 22222222222222 Thread.currentThread().name is ${Thread.currentThread().name}")
             delay(1000L)
             println("World!")
         }
+        println(" 33333333333333333333 Thread.currentThread().name is ${Thread.currentThread().name}")
         println("Hello,") // main thread continues here immediately
-        delay(2000L) // ... while we delay for 2 seconds to keep JVM alive
+        //delay(2000L) // ... while we delay for 2 seconds to keep JVM alive
+    }
+
+
+    @Test
+    fun testWaitingForAJob() = runBlocking{
+        val job = GlobalScope.launch { // launch a new coroutine and keep a reference to its Job
+            delay(1000L)
+            println("World!")
+        }
+
+        println("Hello,")
+
+        job.join() // wait until child coroutine completes
+
     }
 }
