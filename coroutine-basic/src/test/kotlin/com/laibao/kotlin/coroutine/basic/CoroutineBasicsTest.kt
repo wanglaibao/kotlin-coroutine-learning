@@ -244,4 +244,18 @@ class CoroutineBasicsTest {
 
         println("Coroutine scope is over") // This line is not printed until the nested launch completes
     }
+
+
+
+    @Test
+    fun testDoWorldSuspendFunction() = runBlocking {
+        launch { doWorldSuspendFunction() }
+        println("Hello,")
+    }
+
+    // this is your first suspending function
+    private suspend fun doWorldSuspendFunction() {
+        delay(1000L)
+        println("World!")
+    }
 }
