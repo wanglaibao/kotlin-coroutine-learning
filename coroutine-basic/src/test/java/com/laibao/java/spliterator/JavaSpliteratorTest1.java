@@ -141,4 +141,28 @@ public class JavaSpliteratorTest1 {
         System.out.println("Partition- ");
         while(split1.tryAdvance((n) -> System.out.println(n)));
     }
+
+
+    @Test
+    public void testGetExactSizeIfKnown(){
+        List<Integer> input = Arrays.asList(5, 3, 21, 15, 9, 2, 12, 11,21,24,35,60,70,80);
+
+        Spliterator<Integer> spliterator = input.spliterator();
+
+        long estimatedSize = spliterator.estimateSize();
+        System.out.println("EstimatedSize:"+estimatedSize);
+
+        long exactSize = spliterator.getExactSizeIfKnown();
+        System.out.println("exactSize:"+exactSize);
+
+
+        Spliterator<Integer> spliterator1 = spliterator.trySplit();
+
+        long estimatedSize1 = spliterator1.estimateSize();
+        System.out.println("EstimatedSize1:"+estimatedSize1);
+
+        long exactSize1 = spliterator1.getExactSizeIfKnown();
+        System.out.println("exactSize1:"+exactSize1);
+
+    }
 }
