@@ -6,34 +6,17 @@ import java.util.Spliterator;
 import java.util.concurrent.RecursiveTask;
 import java.util.function.Function;
 
-public class ForkJoinSpliteratorConverter<T, R> extends RecursiveTask<List<R>> {
-
-    public static final int THRESHOLD = 1_000;
+public class ForkJoinThresholdSpliteratorConverter<T, R> extends RecursiveTask<List<R>> {
 
     private final Spliterator<T> spliterator;
-
     private final Function<T, R> map;
 
-    /**
-     * By using default Spliterator created by List.spliterator() method,
-     * the code actually increased in complexity
-     * so the next step was to implement my own spliterator:
-     *
-     * @param values
-     * @param map
-     */
-    public ForkJoinSpliteratorConverter(List<T> values, Function<T, R> map) {
-        this.spliterator = values.spliterator();
+    public ForkJoinThresholdSpliteratorConverter(List<T> values, Function<T, R> map) {
+        this.spliterator = new ThresholdSpliterator<>(values);
         this.map = map;
     }
 
-
-    /**
-     * 供给内部调用
-     * @param spliterator
-     * @param map
-     */
-    private ForkJoinSpliteratorConverter(Spliterator<T> spliterator, Function<T, R> map) {
+    private ForkJoinThresholdSpliteratorConverter(Spliterator<T> spliterator, Function<T, R> map) {
         this.spliterator = spliterator;
         this.map = map;
     }
@@ -41,16 +24,17 @@ public class ForkJoinSpliteratorConverter<T, R> extends RecursiveTask<List<R>> {
     @Override
     protected List<R> compute() {
         if(spliterator == null) {
-            return new ArrayList();
+            return new ArrayList<>();
         }
 
-        if(spliterator.estimateSize() <= THRESHOLD) {
+        Spliterator<T> firstHalfSpliterator = spliterator.trySplit();
+        if(firstHalfSpliterator == null) {
             return computeSequentially();
         }
 
-        ForkJoinSpliteratorConverter<T, R> leftConverter = new ForkJoinSpliteratorConverter(spliterator.trySplit(), map);
+        ForkJoinThresholdSpliteratorConverter<T, R> leftConverter = new ForkJoinThresholdSpliteratorConverter<>(firstHalfSpliterator, map);
         leftConverter.fork();
-        ForkJoinSpliteratorConverter<T, R> rightConverter = new ForkJoinSpliteratorConverter(spliterator, map);
+        ForkJoinThresholdSpliteratorConverter<T, R> rightConverter = new ForkJoinThresholdSpliteratorConverter<>(spliterator, map);
         rightConverter.fork();
 
         List<R> leftResults = leftConverter.join();
@@ -60,7 +44,7 @@ public class ForkJoinSpliteratorConverter<T, R> extends RecursiveTask<List<R>> {
 
 
     private List<R> computeSequentially() {
-        List<R> results = new ArrayList((int)spliterator.estimateSize());
+        List<R> results = new ArrayList<>((int) spliterator.estimateSize());
         spliterator.forEachRemaining(t -> results.add(map.apply(t)));
         return results;
     }
