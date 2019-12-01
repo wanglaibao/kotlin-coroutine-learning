@@ -18,11 +18,11 @@ public class ForkJoinConverter<T, R> extends RecursiveTask<List<R>> {
 
     private final List<T> values;
 
-    private final Function<T, R> map;
+    private final Function<T, R> mapper;
 
-    public ForkJoinConverter(List<T> values, Function<T, R> map) {
+    public ForkJoinConverter(List<T> values, Function<T, R> mapper) {
         this.values = values;
-        this.map = map;
+        this.mapper = mapper;
     }
 
     @Override
@@ -35,8 +35,8 @@ public class ForkJoinConverter<T, R> extends RecursiveTask<List<R>> {
          * split the work into smaller pieces until those are small enough to run sequentially
          */
         int halfSize = values.size() / 2;
-        ForkJoinConverter<T, R> leftConverter = new ForkJoinConverter(values.subList(0, halfSize), map);
-        ForkJoinConverter<T, R> rightConverter = new ForkJoinConverter(values.subList(halfSize, values.size()), map);
+        ForkJoinConverter<T, R> leftConverter = new ForkJoinConverter(values.subList(0, halfSize), mapper);
+        ForkJoinConverter<T, R> rightConverter = new ForkJoinConverter(values.subList(halfSize, values.size()), mapper);
 
 
         /**
@@ -58,7 +58,7 @@ public class ForkJoinConverter<T, R> extends RecursiveTask<List<R>> {
     private List<R> computeSequentially() {
         List<R> results = new ArrayList(values.size());
         for(T value : values) {
-            results.add(map.apply(value));
+            results.add(mapper.apply(value));
         }
         return results;
     }
